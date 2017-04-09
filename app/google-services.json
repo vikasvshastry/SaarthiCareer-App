@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "525172349655",
+    "firebase_url": "https://saarthi-career.firebaseio.com",
+    "project_id": "saarthi-career",
+    "storage_bucket": "saarthi-career.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525172349655:android:b8a3929b7aae7a86",
+        "android_client_info": {
+          "package_name": "com.saarthicareer.saarthicareer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525172349655-2oi3o9fpvc6ao7hj0vmta6sl6ioje9pj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saarthicareer.saarthicareer",
+            "certificate_hash": "8d2962d4a09666d619890933c3377183813b9105"
+          }
+        },
+        {
+          "client_id": "525172349655-bvqat3rmf4gpatga8e7ia6ukmjhaun4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRW1OwP_Vkvg7MZqjGvHIrSnacF0MJFgU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525172349655-bvqat3rmf4gpatga8e7ia6ukmjhaun4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
