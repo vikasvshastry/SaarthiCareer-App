@@ -62,6 +62,7 @@ public class SettingsFragment extends Fragment {
         TextView textViewAddCollege = (TextView)rootView.findViewById(R.id.addCollege);
         TextView textViewAddCourseToCollege = (TextView)rootView.findViewById(R.id.assignCouseToCollege);
         TextView textViewSubscriptions = (TextView)rootView.findViewById(R.id.subscriptions);
+        TextView textPasswordChange = (TextView)rootView.findViewById(R.id.changePasswordButton);
 
         //subscriptions
         final Dialog dialogSubscriptions = new Dialog(getActivity());
@@ -166,7 +167,17 @@ public class SettingsFragment extends Fragment {
                         }
 
                         String newCourseId = mapCourses.get(selectedCourse);
-                        rootRef.child("subscriptions").child(uid).setValue(newCourseId);
+                        rootRef.child("subscriptions").child(uid).setValue(newCourseId, new Firebase.CompletionListener() {
+                            @Override
+                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                if(firebaseError==null){
+                                    Toast.makeText(getActivity(), "Subscription successful", Toast.LENGTH_SHORT).show();
+                                    dialogSubscriptions.dismiss();
+                                } else {
+                                    Toast.makeText(getActivity(), "Unable to process request now", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
                     }
                 });
