@@ -167,7 +167,7 @@ public class RegistrationStudentFragment extends Fragment {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(getContext(), "Verification email sent to your mail", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getActivity(), "Verification email sent to your mail", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });

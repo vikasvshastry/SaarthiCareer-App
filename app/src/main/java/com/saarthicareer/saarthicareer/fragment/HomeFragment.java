@@ -19,7 +19,7 @@ import com.saarthicareer.saarthicareer.activity.NewPostActivity;
 public class HomeFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://core-cr.firebaseio.com");
-    FirebaseRecyclerAdapter<String, PostViewHolder> adapter;
+    //FirebaseRecyclerAdapter<String, PostViewHolder> adapter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -43,9 +43,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        rootRef.child("")
 
-        RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
+
+        /*RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
 
         adapter = new FirebaseRecyclerAdapter<String, PostViewHolder>(
                 String.class,
@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
             protected void populateViewHolder(PostViewHolder postViewHolder, String s, int i) {
 
             }
-        };
+        };*/
 
 
         return rootView;

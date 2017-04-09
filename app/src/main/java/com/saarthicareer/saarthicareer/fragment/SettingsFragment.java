@@ -20,10 +20,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.saarthicareer.saarthicareer.R;
 import com.saarthicareer.saarthicareer.other.MultiSpinner;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +33,12 @@ public class SettingsFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     private Firebase tempRef;
+    String uid;
     List<String> selectedColleges = new ArrayList<>();
     List<String> items = new ArrayList<>();
     Map<String,String> mapColleges = new ArrayMap<>();
     List<String> listCourses = new ArrayList<>();
     Map<String,String> mapCourses = new ArrayMap<>();
-    String selectedCollege;
-    String selectedCourse;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -57,6 +55,9 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        uid = firebaseAuth.getCurrentUser().getUid();
+
         TextView textViewCreateNewCourse = (TextView)rootView.findViewById(R.id.createNewCourse);
         TextView textViewAddCollege = (TextView)rootView.findViewById(R.id.addCollege);
         TextView textViewAddCourseToCollege = (TextView)rootView.findViewById(R.id.assignCouseToCollege);
@@ -65,9 +66,110 @@ public class SettingsFragment extends Fragment {
         //subscriptions
         final Dialog dialogSubscriptions = new Dialog(getActivity());
         dialogSubscriptions.setContentView(R.layout.dialog_subscriptions);
+        final TextView currentSubscription = (TextView)dialogSubscriptions.findViewById(R.id.currentSubscription);
+        final Button buttonSubscribe = (Button)dialogSubscriptions.findViewById(R.id.btn_subscribe);
         textViewSubscriptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialogSubscriptions.show();
+                String myCollege;
+
+                //setting currently subscribed course
+                try {
+                    rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String courseId = dataSnapshot.getValue(String.class);
+                            if(courseId!=null)
+                            rootRef.child("courses").child(courseId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String courseName = dataSnapshot.getValue(String.class);
+                                    currentSubscription.setText(courseName);
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+                }catch (Exception e){
+                }
+
+                //populating courses into the spinner
+                rootRef.child("userDetails").child("STUDENT").child(uid).child("college").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String college = dataSnapshot.getValue(String.class);
+                        rootRef.child("college-course").child(college).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                listCourses.clear();
+                                for(DataSnapshot child : dataSnapshot.getChildren()){
+                                    listCourses.add(child.getValue(String.class));
+                                }
+
+                                rootRef.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for(DataSnapshot child : dataSnapshot.getChildren()){
+                                            if(listCourses.contains(child.getKey())){
+                                                mapCourses.put(child.getValue(String.class),child.getKey());
+                                                listCourses.remove(child.getKey());
+                                                listCourses.add(child.getValue(String.class));
+                                            }
+                                        }
+
+                                        Spinner spinnerCourse = (Spinner)dialogSubscriptions.findViewById(R.id.spinnerCourse);
+                                        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,listCourses);
+                                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        spinnerCourse.setAdapter(adapter2);
+                                        adapter2.notifyDataSetChanged();
+
+                                    }
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+                                        Toast.makeText(getActivity(), "Unable to populate colleges", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+                buttonSubscribe.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Spinner spinnerCourse = (Spinner)dialogSubscriptions.findViewById(R.id.spinnerCourse);
+                        String selectedCourse =  spinnerCourse.getSelectedItem().toString();
+
+                        if(selectedCourse.isEmpty()){
+                            Toast.makeText(getActivity(), "Course not selected.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        String newCourseId = mapCourses.get(selectedCourse);
+                        rootRef.child("subscriptions").child(uid).setValue(newCourseId);
+
+                    }
+                });
 
             }
         });
@@ -100,7 +202,7 @@ public class SettingsFragment extends Fragment {
                         spinnerCollege.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                selectedCollege = parent.getItemAtPosition(position).toString();
+                                String selectedCollege = parent.getItemAtPosition(position).toString();
                                 listCourses.clear();
                                 mapCourses.clear();
 
@@ -161,7 +263,12 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 
-                        rootRef.child("college-course").child(mapColleges.get(selectedCollege)).push().setValue(mapCourses.get(selectedCourse), new Firebase.CompletionListener() {
+                        Spinner spinnerCollege = (Spinner)dialogAddCourseToCollege.findViewById(R.id.spinnerCollege);
+                        Spinner spinnerCourse = (Spinner)dialogAddCourseToCollege.findViewById(R.id.spinnerCourse);
+                        String courseId = mapCourses.get(spinnerCourse.getSelectedItem().toString());
+                        String collegeId = mapColleges.get(spinnerCollege.getSelectedItem().toString());
+
+                        rootRef.child("college-course").child(collegeId).push().setValue(courseId, new Firebase.CompletionListener() {
                             @Override
                             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                                 if(firebaseError==null) {
@@ -174,6 +281,7 @@ public class SettingsFragment extends Fragment {
                                 }
                             }
                         });
+
                     }
                 });
             }

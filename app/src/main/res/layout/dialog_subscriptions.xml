@@ -17,7 +17,7 @@
             android:text="Subscribe to a course"
             android:textColor="@color/colorAccent"
             android:gravity="center"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
 
         <LinearLayout
             android:focusable="true"
@@ -37,16 +37,17 @@
                 android:layout_marginStart="5dp"
                 android:textSize="18sp"
                 android:textColor="@color/textColorPrimary"
-                android:text="College"/>
+                android:text="You are currently subscribed to"/>
 
             <TextView
+                android:id="@+id/currentSubscription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_marginStart="5dp"
                 android:textSize="18sp"
                 android:textColor="@color/textColorPrimary"
-                android:text="dsatm"
+                android:text="None"
                 android:layout_below="@+id/choose"/>
 
         </RelativeLayout>
@@ -56,7 +57,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/textColorPrimary"
             android:alpha=".8"
-            android:text="All courses available at this college are displayed below. You will receive notifications only from the course you subscribe to."/>
+            android:text="By subscribing to a new course you are automatically unsubscribed from the current course."/>
 
     </LinearLayout>
 
@@ -105,10 +106,10 @@
             android:layout_height="wrap_content"
             android:textColor="@color/textColorPrimary"
             android:alpha=".8"
-            android:text="Select the Course you want to subscribe to. Any course that you previously subscribed to will be automatically unsubscribed."/>
+            android:text="Select the Course you want to subscribe to."/>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_assign"
+            android:id="@+id/btn_subscribe"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
