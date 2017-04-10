@@ -1,13 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/windowBackground">
+    tools:context="com.saarthicareer.saarthicareer.fragment.HomeFragment">
 
-    <android.support.v7.widget.RecyclerView
+     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/recyclerView"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="#666666"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -15,7 +17,23 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/newpost"
+        android:tint="#ffffff"
         android:layout_alignBottom="@+id/recyclerView"
         android:layout_alignEnd="@+id/recyclerView"/>
 
+    <TextView
+        android:id="@+id/subscriptionErrorMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="You are not subscribed to any course. \nGet over to Settings to subscribe."
+        android:textColor="@color/textColorPrimary"
+        android:textSize="20sp"
+        android:layout_margin="30dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:alpha="0.8"
+        android:visibility="gone"/>
+
 </RelativeLayout>
+

@@ -33,7 +33,7 @@ public class SettingsFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     private Firebase tempRef;
-    String uid;
+    String uid,myCollege;
     List<String> selectedColleges = new ArrayList<>();
     List<String> items = new ArrayList<>();
     Map<String,String> mapColleges = new ArrayMap<>();
@@ -73,7 +73,6 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialogSubscriptions.show();
-                String myCollege;
 
                 //setting currently subscribed course
                 try {
@@ -109,6 +108,7 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String college = dataSnapshot.getValue(String.class);
+                        myCollege = college;
                         rootRef.child("college-course").child(college).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -167,10 +167,12 @@ public class SettingsFragment extends Fragment {
                         }
 
                         String newCourseId = mapCourses.get(selectedCourse);
-                        rootRef.child("subscriptions").child(uid).setValue(newCourseId, new Firebase.CompletionListener() {
+                        rootRef.child("subscriptions").child(uid).setValue("");
+                        rootRef.child("subscriptions").child(uid).push().setValue(newCourseId, new Firebase.CompletionListener() {
                             @Override
                             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                                 if(firebaseError==null){
+                                    rootRef.child("subscriptions").child(uid).child("college").setValue(myCollege);
                                     Toast.makeText(getActivity(), "Subscription successful", Toast.LENGTH_SHORT).show();
                                     dialogSubscriptions.dismiss();
                                 } else {
