@@ -2,7 +2,9 @@ package com.saarthicareer.saarthicareer.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
@@ -20,8 +22,15 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.saarthicareer.saarthicareer.R;
+import com.saarthicareer.saarthicareer.classes.Admin;
+import com.saarthicareer.saarthicareer.classes.Trainee;
+import com.saarthicareer.saarthicareer.classes.Trainer;
 import com.saarthicareer.saarthicareer.other.MultiSpinner;
 
 import java.util.ArrayList;
@@ -55,7 +64,7 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         uid = firebaseAuth.getCurrentUser().getUid();
 
         TextView textViewCreateNewCourse = (TextView)rootView.findViewById(R.id.createNewCourse);
@@ -63,6 +72,81 @@ public class SettingsFragment extends Fragment {
         TextView textViewAddCourseToCollege = (TextView)rootView.findViewById(R.id.assignCouseToCollege);
         TextView textViewSubscriptions = (TextView)rootView.findViewById(R.id.subscriptions);
         TextView textPasswordChange = (TextView)rootView.findViewById(R.id.changePasswordButton);
+
+        //password change
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Updating...");
+        final Dialog dialogPasswordChange = new Dialog(getActivity());
+        dialogPasswordChange.setContentView(R.layout.dialog_password_change);
+        final EditText oldpass = (EditText)dialogPasswordChange.findViewById(R.id.oldpassword);
+        final EditText newpass = (EditText)dialogPasswordChange.findViewById(R.id.newpassword);
+        final EditText confpass = (EditText)dialogPasswordChange.findViewById(R.id.confirmpassword);
+        final TextView change = (TextView) dialogPasswordChange.findViewById(R.id.change);
+        textPasswordChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogPasswordChange.show();
+                change.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        progressDialog.show();
+                        final String old = oldpass.getText().toString().trim();
+                        final String NewPass = newpass.getText().toString().trim();
+                        final String con = confpass.getText().toString().trim();
+
+                        if(old.equals("") || NewPass.equals("") || con.equals(""))
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), "Some fields empty", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        if(NewPass.equals(con) && NewPass.length()>=6){
+                            AuthCredential credential = EmailAuthProvider.getCredential(firebaseAuth.getCurrentUser().getEmail(),old);
+                            try {
+                                firebaseAuth.getCurrentUser().reauthenticate(credential)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(getActivity(), "Authentication successful", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(getActivity(), "Cannot authenticate log out and in before trying again.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                firebaseAuth.getCurrentUser().updatePassword(NewPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            progressDialog.dismiss();
+                                            dialogPasswordChange.dismiss();
+                                            Toast.makeText(getActivity(), "Password updated", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{
+                                            progressDialog.dismiss();
+                                            dialogPasswordChange.dismiss();
+                                            Toast.makeText(getActivity(), "Password could not be changed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }catch (Exception e){
+                                Toast.makeText(getActivity(), "Authentication error. Check your connection", Toast.LENGTH_SHORT).show();
+                                dialogPasswordChange.dismiss();
+                            }
+                        }else {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), "Check for Min 6 letters in password or ConfirmPassword does not match NewPassword", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+            }
+        });
+
+
 
         //subscriptions
         final Dialog dialogSubscriptions = new Dialog(getActivity());
