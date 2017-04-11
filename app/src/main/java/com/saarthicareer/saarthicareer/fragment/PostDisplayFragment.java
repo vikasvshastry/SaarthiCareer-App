@@ -72,6 +72,7 @@ public class PostDisplayFragment extends Fragment {
                 bodyText.setText(selectedPost.getBody());
                 postImage.setColorFilter(color);
                 postLetter.setText(selectedPost.getHead().charAt(0) + "");
+                commentCountText.setText(selectedPost.getNoOfComments()+"");
 
                 commentbutton.setOnClickListener(new View.OnClickListener() {
                             @Override

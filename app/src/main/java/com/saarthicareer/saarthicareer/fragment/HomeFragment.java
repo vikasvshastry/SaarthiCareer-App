@@ -148,6 +148,7 @@ public class HomeFragment extends Fragment {
                         String firstLetter = p.getHead().charAt(0)+"";
                         postViewHolder.postImage.setColorFilter(color);
                         postViewHolder.postLetterForCircle.setText(firstLetter);
+                        postViewHolder.commentcount.setText(p.getNoOfComments()+"");
 
                         //to display the full post
                         postViewHolder.mView.setOnClickListener(new View.OnClickListener() {
