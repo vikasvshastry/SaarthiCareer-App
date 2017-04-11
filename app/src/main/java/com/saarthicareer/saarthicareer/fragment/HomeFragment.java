@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -146,6 +148,27 @@ public class HomeFragment extends Fragment {
                         String firstLetter = p.getHead().charAt(0)+"";
                         postViewHolder.postImage.setColorFilter(color);
                         postViewHolder.postLetterForCircle.setText(firstLetter);
+
+                        //to display the full post
+                        postViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("msgId",s);
+                                bundle.putInt("color",color);
+
+                                Toast.makeText(getActivity(), ""+s, Toast.LENGTH_SHORT).show();
+
+                                Fragment fragment = new PostDisplayFragment();
+                                fragment.setArguments(bundle);
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.add(R.id.container_body, fragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                            }
+                        });
+
                     }
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
