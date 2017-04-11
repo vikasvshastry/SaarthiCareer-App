@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,13 +73,13 @@ public class PostDisplayFragment extends Fragment {
                 postImage.setColorFilter(color);
                 postLetter.setText(selectedPost.getHead().charAt(0) + "");
 
-                        /*commentbutton.setOnClickListener(new View.OnClickListener() {
+                commentbutton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("msgid", msgId);
 
-                                Fragment fragment = new CommentsHomeFragment();
+                                Fragment fragment = new CommentsFragment();
                                 fragment.setArguments(bundle);
                                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -85,7 +87,7 @@ public class PostDisplayFragment extends Fragment {
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                             }
-                        });*/
+                        });
 
             }
 

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:clickable="true">
+
+    <LinearLayout
+        android:id="@+id/MainLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:alpha="0.1"/>
+
+    <RelativeLayout
+        android:id="@+id/lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/sendComment"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/bg_circle"
+            android:tint="#ef5350"
+            android:layout_marginEnd="5dp"
+            android:layout_alignParentEnd="true"/>
+
+        <ImageView
+            android:id="@+id/circle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="4dp"
+            android:src="@drawable/send"
+            android:tint="#ffffff"
+            android:layout_marginEnd="6dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentEnd="true"/>
+
+        <EditText
+            android:id="@+id/commentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type a message"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#efefef"
+            android:layout_toStartOf="@+id/sendComment"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_bg2"
+            android:rotation="-90"
+            android:layout_alignEnd="@+id/commentText"
+            android:layout_marginEnd="-15dp"/>
+    </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/recyclerViewForComments"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lay"
+            android:layout_alignParentTop="true"
+            android:overScrollMode="never"/>
+
+</RelativeLayout>

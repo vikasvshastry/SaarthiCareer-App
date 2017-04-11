@@ -1,15 +1,20 @@
 package com.saarthicareer.saarthicareer.classes;
 
-/**
- * Created by vikas on 07-Apr-17.
- */
-
 public class Post {
-    String head;
-    String body;
-    String sender;
-    String time;
-    String date;
+    private String head;
+    private String body;
+    private String sender;
+    private String time;
+    private String date;
+    private int noOfComments;
+
+    public int getNoOfComments() {
+        return noOfComments;
+    }
+
+    public void setNoOfComments(int noOfComments) {
+        this.noOfComments = noOfComments;
+    }
 
     public String getDate() {
         return date;

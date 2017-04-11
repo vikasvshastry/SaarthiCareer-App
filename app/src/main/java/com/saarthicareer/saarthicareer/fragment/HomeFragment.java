@@ -169,6 +169,22 @@ public class HomeFragment extends Fragment {
                             }
                         });
 
+                        postViewHolder.commentbutton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("msgid", s);
+
+                                Fragment fragment = new CommentsFragment();
+                                fragment.setArguments(bundle);
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.add(R.id.container_body, fragment);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                            }
+                        });
+
                     }
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
