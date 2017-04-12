@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:id="@+id/recyclerView"
         android:layout_height="match_parent"
-        android:background="#666666"/>
+        android:background="@color/windowBackground"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/newpost"
-        android:tint="#ffffff"
+        android:tint="@color/windowBackground"
         android:layout_alignBottom="@+id/recyclerView"
         android:layout_alignEnd="@+id/recyclerView"/>
 

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@color/windowBackground"
     android:clickable="true">
 
     <LinearLayout
@@ -24,7 +24,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/bg_circle"
-            android:tint="#ef5350"
+            android:tint="@color/colorAccent"
             android:layout_marginEnd="5dp"
             android:layout_alignParentEnd="true"/>
 
@@ -34,7 +34,7 @@
             android:layout_height="30dp"
             android:padding="4dp"
             android:src="@drawable/send"
-            android:tint="#ffffff"
+            android:tint="#000000"
             android:layout_marginEnd="6dp"
             android:layout_marginTop="5dp"
             android:layout_alignParentEnd="true"/>
@@ -67,6 +67,7 @@
             android:layout_width="match_parent"
             android:id="@+id/recyclerViewForComments"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_above="@+id/lay"
             android:layout_alignParentTop="true"
             android:overScrollMode="never"/>

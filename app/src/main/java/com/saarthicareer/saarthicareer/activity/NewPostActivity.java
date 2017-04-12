@@ -213,6 +213,9 @@ public class NewPostActivity extends AppCompatActivity {
                 tempRef.setValue(post);
                 rootRef.child("notifications").child("messages").child(college).child(course).push().setValue(tempRef.getKey());
 
+                editTextBody.setText("");
+                editTextSubject.setText("");
+
             }
         });
     }

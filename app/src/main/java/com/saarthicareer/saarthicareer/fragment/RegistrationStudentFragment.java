@@ -168,12 +168,10 @@ public class RegistrationStudentFragment extends Fragment {
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         Toast.makeText(getActivity(), "Verification email sent to your mail", Toast.LENGTH_SHORT).show();
-                                                        getActivity().finish();
                                                     }
                                                     else
                                                     {
                                                         Toast.makeText(getActivity(), "Unable to send verification mail", Toast.LENGTH_SHORT).show();
-                                                        getActivity().finish();
                                                     }
                                                 }
                                             });

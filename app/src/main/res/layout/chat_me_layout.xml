@@ -10,7 +10,7 @@
         android:layout_height="30dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/arrow_bg1"
-        android:tint="#ffd4d3"
+        android:tint="#abd8d8"
         android:layout_alignParentEnd="true"/>
 
     <RelativeLayout

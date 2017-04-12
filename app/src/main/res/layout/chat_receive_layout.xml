@@ -11,7 +11,7 @@
         android:layout_height="30dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/arrow_bg2"
-        android:tint="#cce8f4"
+        android:tint="#f4f4f4"
         android:layout_alignParentStart="true"/>
 
     <RelativeLayout
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textColor="#959595"
+            android:textColor="#666666"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="5dp"
             android:textSize="13sp"/>
