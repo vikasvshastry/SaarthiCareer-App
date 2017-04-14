@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,10 +24,16 @@ import com.saarthicareer.saarthicareer.fragment.SettingsFragment;
 
 public class MainActivity extends ActionBarActivity implements FragmentDrawer.FragmentDrawerListener {
 
-    private static String TAG = MainActivity.class.getSimpleName();
+    private int fragno;
     private FirebaseAuth firebaseAuth;
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
+    private DrawerLayout drawerLayout;
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putInt("fragno",fragno);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +52,30 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        drawerFragment = (FragmentDrawer)
-                getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment = (FragmentDrawer)getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerLayout=(DrawerLayout) findViewById(R.id.drawer_layout);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
 
-        // display the first navigation drawer view on app launch
-        displayView(0);
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+
+            @Override
+            public void onBackStackChanged() {
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_body);
+                if (f != null){
+                    updateTitleAndDrawer(f);
+                }
+            }
+        });
+
+        if(savedInstanceState != null){
+            int no = savedInstanceState.getInt("fragno");
+            displayView(no);
+        }
+        else
+        {
+            displayView(0);
+        }
     }
 
 
@@ -118,13 +142,48 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         }
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
-            fragmentTransaction.commit();
+            String backStateName =  fragment.getClass().getName();
 
+            FragmentManager manager = getSupportFragmentManager();
+            boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+
+            if (!fragmentPopped && manager.findFragmentByTag(backStateName) == null){ //fragment not in back stack, create it.
+                FragmentTransaction ft = manager.beginTransaction();
+                ft.replace(R.id.container_body, fragment, backStateName);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack(backStateName);
+                ft.commit();
+            }
             // set the toolbar title
             getSupportActionBar().setTitle(title);
+        }
+    }
+
+    private void updateTitleAndDrawer (Fragment fragment){
+        String fragClassName = fragment.getClass().getName();
+
+        if (fragClassName.equals(HomeFragment.class.getName())){
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+        }
+        else if (fragClassName.equals(FeedbackFragment.class.getName())){
+            getSupportActionBar().setTitle(getString(R.string.nav_item_feedback));
+        }
+        else if (fragClassName.equals(AboutFragment.class.getName())){
+            getSupportActionBar().setTitle(getString(R.string.nav_item_about));
+        }
+        else if (fragClassName.equals(SettingsFragment.class.getName())){
+            getSupportActionBar().setTitle(getString(R.string.nav_item_settings));
+        }
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (this.drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }
