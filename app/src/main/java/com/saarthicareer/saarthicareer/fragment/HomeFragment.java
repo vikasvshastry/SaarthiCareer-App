@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     FirebaseRecyclerAdapter<String, PostViewHolder> adapter;
-    private String uid,college,course;
+    private String uid;
     private RecyclerView recyclerView;
     private View rootView;
     LinearLayoutManager mLayoutManager;
@@ -52,8 +52,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -85,17 +84,24 @@ public class HomeFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(type.equals("STUDENT")){
                             final Trainee trainee = dataSnapshot.getValue(Trainee.class);
-                        }
-                        else if(type.equals("ADMIN")){
-                            final Admin admin = dataSnapshot.getValue(Admin.class);
-                        }
-                        else if(type.equals("TRAINER")){
-                            final Trainer trainer = dataSnapshot.getValue(Trainer.class);
+                            rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                                        String course = child.getValue(String.class);
+                                        adapterFunc(trainee.getCollege(),course);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
+                            });                        }
+                        else if(type.equals("ADMIN") || type.equals("TRAINER")){
+
                         }
                     }
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
                     }
                 });
             }
@@ -104,33 +110,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    if(child.getKey().equals("college")){
-                        college = child.getValue(String.class);
-                    }
-                    /*else {
-                        course = child.getValue(String.class);
-                    }*/
-                }
-                TextView errorMsg = (TextView)rootView.findViewById(R.id.subscriptionErrorMessage);
-                if(college!=null && course!=null) {
-                    errorMsg.setVisibility(View.GONE);
-                    adapterFunc();
-                }else{
-                    errorMsg.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-
         return rootView;
     }
+
+
 
     public static class PostViewHolder extends RecyclerView.ViewHolder{
 
@@ -155,7 +138,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void adapterFunc(){
+    public void adapterFunc(String college, String course){
 
         adapter = new FirebaseRecyclerAdapter<String, PostViewHolder>(
                 String.class,
