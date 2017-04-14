@@ -26,8 +26,10 @@ import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.saarthicareer.saarthicareer.R;
 import com.saarthicareer.saarthicareer.activity.NewPostActivity;
+import com.saarthicareer.saarthicareer.classes.Admin;
 import com.saarthicareer.saarthicareer.classes.Post;
 import com.saarthicareer.saarthicareer.classes.Trainee;
+import com.saarthicareer.saarthicareer.classes.Trainer;
 
 
 public class HomeFragment extends Fragment {
@@ -73,6 +75,35 @@ public class HomeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
 
+        final String uid = firebaseAuth.getCurrentUser().getUid();
+        rootRef.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                final String type = snapshot.getValue(String.class);
+                rootRef.child("userDetails").child(type).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(type.equals("STUDENT")){
+                            final Trainee trainee = dataSnapshot.getValue(Trainee.class);
+                        }
+                        else if(type.equals("ADMIN")){
+                            final Admin admin = dataSnapshot.getValue(Admin.class);
+                        }
+                        else if(type.equals("TRAINER")){
+                            final Trainer trainer = dataSnapshot.getValue(Trainer.class);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
         rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,9 +111,9 @@ public class HomeFragment extends Fragment {
                     if(child.getKey().equals("college")){
                         college = child.getValue(String.class);
                     }
-                    else {
+                    /*else {
                         course = child.getValue(String.class);
-                    }
+                    }*/
                 }
                 TextView errorMsg = (TextView)rootView.findViewById(R.id.subscriptionErrorMessage);
                 if(college!=null && course!=null) {

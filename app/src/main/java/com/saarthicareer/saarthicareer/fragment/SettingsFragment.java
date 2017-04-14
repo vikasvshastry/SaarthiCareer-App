@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +45,7 @@ public class SettingsFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     private Firebase tempRef;
-    String uid,myCollege;
+    String uid;
     List<String> selectedColleges = new ArrayList<>();
     List<String> items = new ArrayList<>();
     Map<String,String> mapColleges = new ArrayMap<>();
@@ -62,7 +65,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         uid = firebaseAuth.getCurrentUser().getUid();
@@ -149,127 +152,18 @@ public class SettingsFragment extends Fragment {
 
 
         //subscriptions
-        final Dialog dialogSubscriptions = new Dialog(getActivity());
-        dialogSubscriptions.setContentView(R.layout.dialog_subscriptions);
-        final TextView currentSubscription = (TextView)dialogSubscriptions.findViewById(R.id.currentSubscription);
-        final Button buttonSubscribe = (Button)dialogSubscriptions.findViewById(R.id.btn_subscribe);
         textViewSubscriptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogSubscriptions.show();
-
-                //setting currently subscribed course
-                try {
-                    rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String courseId = dataSnapshot.getValue(String.class);
-                            if(courseId!=null)
-                            rootRef.child("courses").child(courseId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    String courseName = dataSnapshot.getValue(String.class);
-                                    currentSubscription.setText(courseName);
-                                }
-
-                                @Override
-                                public void onCancelled(FirebaseError firebaseError) {
-
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    });
-                }catch (Exception e){
-                }
-
-                //populating courses into the spinner
-                rootRef.child("userDetails").child("STUDENT").child(uid).child("college").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String college = dataSnapshot.getValue(String.class);
-                        myCollege = college;
-                        rootRef.child("college-course").child(college).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                listCourses.clear();
-                                for(DataSnapshot child : dataSnapshot.getChildren()){
-                                    listCourses.add(child.getValue(String.class));
-                                }
-
-                                rootRef.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for(DataSnapshot child : dataSnapshot.getChildren()){
-                                            if(listCourses.contains(child.getKey())){
-                                                mapCourses.put(child.getValue(String.class),child.getKey());
-                                                listCourses.remove(child.getKey());
-                                                listCourses.add(child.getValue(String.class));
-                                            }
-                                        }
-
-                                        Spinner spinnerCourse = (Spinner)dialogSubscriptions.findViewById(R.id.spinnerCourse);
-                                        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,listCourses);
-                                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        spinnerCourse.setAdapter(adapter2);
-                                        adapter2.notifyDataSetChanged();
-
-                                    }
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-                                        Toast.makeText(getActivity(), "Unable to populate colleges", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                            }
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-
-                            }
-                        });
-                    }
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
-
-                buttonSubscribe.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Spinner spinnerCourse = (Spinner)dialogSubscriptions.findViewById(R.id.spinnerCourse);
-                        String selectedCourse =  spinnerCourse.getSelectedItem().toString();
-
-                        if(selectedCourse.isEmpty()){
-                            Toast.makeText(getActivity(), "Course not selected.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        String newCourseId = mapCourses.get(selectedCourse);
-                        rootRef.child("subscriptions").child(uid).setValue("");
-                        rootRef.child("subscriptions").child(uid).push().setValue(newCourseId, new Firebase.CompletionListener() {
-                            @Override
-                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                if(firebaseError==null){
-                                    rootRef.child("subscriptions").child(uid).child("college").setValue(myCollege);
-                                    Toast.makeText(getActivity(), "Subscription successful", Toast.LENGTH_SHORT).show();
-                                    dialogSubscriptions.dismiss();
-                                } else {
-                                    Toast.makeText(getActivity(), "Unable to process request now", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
-                    }
-                });
-
+                Fragment fragment = new SubscriptionSettingFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
+
 
 
         //Assign a Course to a College
