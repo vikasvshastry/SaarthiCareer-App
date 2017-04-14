@@ -1,18 +1,24 @@
 package com.saarthicareer.saarthicareer.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,21 +32,28 @@ import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.saarthicareer.saarthicareer.R;
 import com.saarthicareer.saarthicareer.activity.NewPostActivity;
-import com.saarthicareer.saarthicareer.classes.Admin;
 import com.saarthicareer.saarthicareer.classes.Post;
 import com.saarthicareer.saarthicareer.classes.Trainee;
-import com.saarthicareer.saarthicareer.classes.Trainer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class HomeFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     FirebaseRecyclerAdapter<String, PostViewHolder> adapter;
-    private String uid;
+    private String uid,collegeId;
     private RecyclerView recyclerView;
     private View rootView;
     LinearLayoutManager mLayoutManager;
     ColorGenerator generator = ColorGenerator.MATERIAL;
+    List<String> collegeList = new ArrayList<>();
+    Map<String,String> collegeMap = new ArrayMap<>();
+    List<String> courseList = new ArrayList<>();
+    Map<String,String> courseMap = new ArrayMap<>();
+    int currentCourseIndex;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -95,8 +108,186 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onCancelled(FirebaseError firebaseError) {
                                 }
-                            });                        }
+                            });
+                        }
                         else if(type.equals("ADMIN") || type.equals("TRAINER")){
+                            final RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.trainerView);
+                            relativeLayout.setVisibility(View.VISIBLE);
+                            final RelativeLayout relativeLayout2 = (RelativeLayout)rootView.findViewById(R.id.trainerView2);
+                            relativeLayout2.setVisibility(View.VISIBLE);
+                            final FloatingActionButton fabColl = (FloatingActionButton)rootView.findViewById(R.id.fabColl);
+                            fabColl.setVisibility(View.VISIBLE);
+                            final Dialog collegeSelectDialog = new Dialog(getActivity());
+                            collegeSelectDialog.setContentView(R.layout.dialog_college_select_trainers);
+                            final ListView listView = (ListView)collegeSelectDialog.findViewById(R.id.collegeListView);
+                            final ImageView navLeft = (ImageView)rootView.findViewById(R.id.navLeft);
+                            final ImageView navRight = (ImageView)rootView.findViewById(R.id.navRight);
+                            final TextView heading = (TextView)rootView.findViewById(R.id.heading);
+                            final TextView headingCollege = (TextView)rootView.findViewById(R.id.headingCollege);
+
+                            //Initial loading
+                            rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    courseMap.clear();
+                                    courseList.clear();
+                                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                                        collegeId = child.getKey();
+                                        rootRef.child("colleges").child(child.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                headingCollege.setText(dataSnapshot.getValue(String.class));
+                                            }
+                                            @Override
+                                            public void onCancelled(FirebaseError firebaseError) {
+                                            }
+                                        });
+                                        for(DataSnapshot ds : child.getChildren()){
+                                            rootRef.child("courses").child(ds.getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    courseMap.put(dataSnapshot.getValue(String.class),dataSnapshot.getKey());
+                                                    courseList.add(dataSnapshot.getValue(String.class));
+                                                    currentCourseIndex = 0;
+                                                    adapterFunc(collegeId,courseMap.get(courseList.get(currentCourseIndex)));
+                                                    heading.setText(courseList.get(currentCourseIndex));
+                                                }
+                                                @Override
+                                                public void onCancelled(FirebaseError firebaseError) {
+                                                }
+                                            });
+                                        }
+                                        navLeft.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if(currentCourseIndex==0){
+                                                    currentCourseIndex=courseList.size()-1;
+                                                }
+                                                else{
+                                                    --currentCourseIndex;
+                                                }
+                                                heading.setText(courseList.get(currentCourseIndex));
+                                                adapterFunc(collegeId,courseMap.get(courseList.get(currentCourseIndex)));
+                                            }
+                                        });
+                                        navRight.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if(currentCourseIndex==courseList.size()-1){
+                                                    currentCourseIndex=0;
+                                                }
+                                                else{
+                                                    ++currentCourseIndex;
+                                                }
+
+                                                heading.setText(courseList.get(currentCourseIndex));
+                                                adapterFunc(collegeId,courseMap.get(courseList.get(currentCourseIndex)));
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
+                            });
+
+                            //changing college
+                            fabColl.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    collegeSelectDialog.show();
+
+                                    rootRef.child("subscriptions").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            collegeMap.clear();
+                                            collegeList.clear();
+                                            for(DataSnapshot child : dataSnapshot.getChildren()){
+                                                rootRef.child("colleges").child(child.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot){
+                                                        collegeMap.put(dataSnapshot.getValue(String.class),dataSnapshot.getKey());
+                                                        collegeList.add(dataSnapshot.getValue(String.class));
+                                                        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item,collegeList);
+                                                        listView.setAdapter(adapter);
+                                                    }
+                                                    @Override
+                                                    public void onCancelled(FirebaseError firebaseError) {
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(FirebaseError firebaseError) {
+                                        }
+                                    });
+
+                                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                            collegeSelectDialog.dismiss();
+                                            String collegeName = ((TextView) view).getText().toString();
+                                            headingCollege.setText(collegeName);
+                                            collegeId = collegeMap.get(collegeName);
+                                            rootRef.child("subscriptions").child(uid).child(collegeId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    courseMap.clear();
+                                                    courseList.clear();
+                                                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                                                        rootRef.child("courses").child(child.getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                courseMap.put(dataSnapshot.getValue(String.class),dataSnapshot.getKey());
+                                                                courseList.add(dataSnapshot.getValue(String.class));
+                                                                currentCourseIndex = 0;
+                                                                adapterFunc(collegeId,courseMap.get(courseList.get(currentCourseIndex)));
+                                                                heading.setText(courseList.get(currentCourseIndex));
+                                                            }
+                                                            @Override
+                                                            public void onCancelled(FirebaseError firebaseError) {
+                                                            }
+                                                        });
+                                                    }
+                                                    navLeft.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            if(currentCourseIndex==0){
+                                                                currentCourseIndex=courseList.size()-1;
+                                                            }
+                                                            else{
+                                                                --currentCourseIndex;
+                                                            }
+                                                            heading.setText(courseList.get(currentCourseIndex));
+                                                            adapterFunc(collegeId,courseMap.get(courseList.get(currentCourseIndex)));
+                                                        }
+                                                    });
+                                                    navRight.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            if(currentCourseIndex==courseList.size()-1){
+                                                                currentCourseIndex=0;
+                                                            }
+                                                            else{
+                                                                ++currentCourseIndex;
+                                                            }
+
+                                                            heading.setText(courseList.get(currentCourseIndex));
+                                                            adapterFunc(collegeId,courseMap.get(courseList.get(currentCourseIndex)));
+                                                        }
+                                                    });
+                                                }
+                                                @Override
+                                                public void onCancelled(FirebaseError firebaseError) {
+                                                }
+                                            });
+
+                                        }
+                                    });
+
+                                }
+                            });
 
                         }
                     }
@@ -112,8 +303,6 @@ public class HomeFragment extends Fragment {
 
         return rootView;
     }
-
-
 
     public static class PostViewHolder extends RecyclerView.ViewHolder{
 

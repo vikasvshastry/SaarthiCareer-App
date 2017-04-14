@@ -2,15 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.saarthicareer.saarthicareer.fragment.HomeFragment">
+
+    <RelativeLayout
+        android:id="@+id/trainerView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#888888"
+        android:layout_marginTop="-10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/headingCollege"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_margin="10dp"
+            android:textColor="#ffffff"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/trainerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00b0ff"
+        android:background="#888888"
         android:layout_marginTop="-10dp"
+
+        android:layout_below="@+id/trainerView2"
         android:visibility="gone">
 
         <ImageView
@@ -27,7 +49,6 @@
             android:id="@+id/heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ISE"
             android:textSize="24sp"
             android:layout_margin="10dp"
             android:textColor="#ffffff"
@@ -46,10 +67,11 @@
 
     </RelativeLayout>
 
-     <android.support.v7.widget.RecyclerView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:id="@+id/recyclerView"
         android:layout_height="match_parent"
+        android:layout_below="@+id/trainerView"
         android:background="@color/windowBackground"/>
 
     <android.support.design.widget.FloatingActionButton
@@ -61,6 +83,19 @@
         android:tint="@color/windowBackground"
         android:layout_alignBottom="@+id/recyclerView"
         android:layout_alignEnd="@+id/recyclerView"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabColl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_expand_more_black_18dp"
+        android:rotation="180"
+        android:tint="@color/windowBackground"
+        android:layout_above="@+id/fab"
+        android:layout_alignEnd="@+id/recyclerView"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/subscriptionErrorMessage"
