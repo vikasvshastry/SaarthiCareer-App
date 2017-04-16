@@ -24,7 +24,6 @@ public class PostDisplayFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     String msgId;
-    String uid;
 
     public PostDisplayFragment() {
         // Required empty public constructor
@@ -54,14 +53,13 @@ public class PostDisplayFragment extends Fragment {
             msgId = bundle.getString("msgId");
         }
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        uid = firebaseAuth.getCurrentUser().getUid();
-
         //fetching the post or notification
         rootRef.child("notifications").child("messagesBank").child(msgId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Post selectedPost = dataSnapshot.getValue(Post.class);
+
+                //setting the fetched values on the ui
                 senderText.setText(selectedPost.getSender());
                 dateText.setText(selectedPost.getDate());
                 timeText.setText(selectedPost.getTime());

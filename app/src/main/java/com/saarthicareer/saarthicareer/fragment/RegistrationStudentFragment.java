@@ -64,11 +64,13 @@ public class RegistrationStudentFragment extends Fragment {
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
+        //populating majors into the spinner
         String[] MAJORS = {"ISE","CSE","ECE","EEE","ME","CIV","MCA"};
         ArrayAdapter<String> arrayAdapterMajors = new ArrayAdapter<>(getActivity(),android.R.layout.simple_dropdown_item_1line, MAJORS);
         final MaterialBetterSpinner dropDownBoxMajors = (MaterialBetterSpinner)rootView.findViewById(R.id.drop_down_major);
         dropDownBoxMajors.setAdapter(arrayAdapterMajors);
 
+        //fetching colleges added by admin and populated in the spinner
         final MaterialBetterSpinner dropDownBoxColleges = (MaterialBetterSpinner)rootView.findViewById(R.id.drop_down_college);
         rootRef.child("colleges").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
