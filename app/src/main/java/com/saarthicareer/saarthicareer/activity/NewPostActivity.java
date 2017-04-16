@@ -34,6 +34,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     String senderName;
+    String college,course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +151,6 @@ public class NewPostActivity extends AppCompatActivity {
 
                 String subject = editTextSubject.getText().toString().trim();
                 String body = editTextBody.getText().toString().trim();
-                String college,course;
 
                 Spinner spinnerCollege = (Spinner)findViewById(R.id.spinnerCollege);
                 Spinner spinnerCourse = (Spinner)findViewById(R.id.spinnerCourse);
@@ -175,11 +175,29 @@ public class NewPostActivity extends AppCompatActivity {
                 post.setBody(body);
                 post.setTime(currentDateTimeString.substring(12, currentDateTimeString.length()));
                 post.setDate(currentDateTimeString.substring(0, 11));
+                post.setSenderId(uid);
                 post.setSender(senderName);
 
-                Firebase tempRef = rootRef.child("notifications").child("messagesBank").push();
-                tempRef.setValue(post);
-                rootRef.child("notifications").child("messages").child(college).child(course).push().setValue(tempRef.getKey());
+                final Firebase tempRef = rootRef.child("notifications").child("messagesBank").push();
+                tempRef.setValue(post, new Firebase.CompletionListener() {
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                        if(firebaseError==null){
+                            rootRef.child("notifications").child("messages").child(college).child(course).push().setValue(tempRef.getKey(), new Firebase.CompletionListener() {
+                                @Override
+                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    if(firebaseError==null){
+                                        Toast.makeText(NewPostActivity.this, "Successfully posted!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(NewPostActivity.this, "Failed to post.. Sorry", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
 
                 editTextBody.setText("");
                 editTextSubject.setText("");

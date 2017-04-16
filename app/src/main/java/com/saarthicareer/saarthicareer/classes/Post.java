@@ -4,9 +4,18 @@ public class Post {
     private String head;
     private String body;
     private String sender;
+    private String senderId;
     private String time;
     private String date;
     private int noOfComments;
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
 
     public int getNoOfComments() {
         return noOfComments;
