@@ -149,8 +149,7 @@ public class RegistrationTrainerFragment extends Fragment {
                                                         }
                                                     }
                                                 });
-                                        startActivity(new Intent(getActivity(), MainActivity.class));
-                                        getActivity().finish();
+                                        startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
                                     }
                                     else{
                                         progressDialog.dismiss();

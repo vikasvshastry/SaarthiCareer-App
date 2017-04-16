@@ -25,6 +25,39 @@
             android:layout_width="0px"
             android:layout_height="0px"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/choose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="5dp"
+                android:textSize="18sp"
+                android:textColor="@color/textColorPrimary"
+                android:text="Choose college"/>
+
+            <Spinner
+                android:id="@+id/spinnerCollege"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/choose"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
+            android:alpha=".8"
+            android:text="Select the college where you want to end a course."/>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -72,10 +105,10 @@
             android:layout_height="wrap_content"
             android:textColor="@color/textColorPrimary"
             android:alpha=".8"
-            android:text="Select the Course to be ended."/>
+            android:text="Select the couse to be ended."/>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_end"
+            android:id="@+id/btn_endCourse"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"

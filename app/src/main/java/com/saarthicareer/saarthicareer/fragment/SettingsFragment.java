@@ -93,16 +93,119 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+
         //end course
         final Dialog dialogEndCourse = new Dialog(getActivity());
         dialogEndCourse.setContentView(R.layout.dialog_end_course);
+        final Button buttonEndCourse = (Button)dialogEndCourse.findViewById(R.id.btn_endCourse);
         textViewEdnCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialogEndCourse.show();
+                items.clear();
+                mapColleges.clear();
+
+                rootRef.child("colleges").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot child : dataSnapshot.getChildren()){
+                            mapColleges.put(child.getValue(String.class),child.getKey());
+                            items.add(child.getValue(String.class));
+                        }
+
+                        Spinner spinnerCollege = (Spinner)dialogEndCourse.findViewById(R.id.spinnerCollege);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,items);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerCollege.setAdapter(adapter);
+
+                        spinnerCollege.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                String selectedCollege = parent.getItemAtPosition(position).toString();
+                                listCourses.clear();
+                                mapCourses.clear();
+
+                                rootRef.child("college-course").child(mapColleges.get(selectedCollege)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for(DataSnapshot childSnap : dataSnapshot.getChildren()){
+                                            String course = childSnap.getValue(String.class);
+                                            listCourses.add(course);
+                                        }
+
+                                        rootRef.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                for(DataSnapshot child : dataSnapshot.getChildren()){
+                                                    if(listCourses.contains(child.getKey())){
+                                                        listCourses.remove(child.getKey());
+                                                        mapCourses.put(child.getValue(String.class),child.getKey());
+                                                        listCourses.add(child.getValue(String.class));
+                                                    }
+                                                }
+
+                                                Spinner spinnerCourse = (Spinner)dialogEndCourse.findViewById(R.id.spinnerCourse);
+                                                ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,listCourses);
+                                                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                spinnerCourse.setAdapter(adapter2);
+                                                adapter2.notifyDataSetChanged();
+
+                                            }
+                                            @Override
+                                            public void onCancelled(FirebaseError firebaseError) {
+                                                Toast.makeText(getActivity(), "Unable to populate colleges", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+
+                                    }
+                                });
+
+                            }
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Toast.makeText(getActivity(), "Unable to populate colleges", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                buttonEndCourse.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Spinner spinnerCollege = (Spinner)dialogEndCourse.findViewById(R.id.spinnerCollege);
+                        Spinner spinnerCourse = (Spinner)dialogEndCourse.findViewById(R.id.spinnerCourse);
+                        final String courseId = mapCourses.get(spinnerCourse.getSelectedItem().toString());
+                        final String collegeId = mapColleges.get(spinnerCollege.getSelectedItem().toString());
+
+                        rootRef.child("college-course").child(collegeId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for(DataSnapshot child : dataSnapshot.getChildren()){
+                                    if(child.getValue(String.class).equals(courseId)){
+                                        rootRef.child("college-course").child(collegeId).child(child.getKey()).removeValue();
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        });
+
+                    }
+                });
 
             }
         });
+
+
+
 
         //password change
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());

@@ -33,8 +33,8 @@ import java.util.Map;
 public class NewPostActivity extends AppCompatActivity {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
-    String senderName;
-    String college,course;
+    private String senderName;
+    private String college,course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class NewPostActivity extends AppCompatActivity {
         final TextView textViewFrom = (TextView)findViewById(R.id.fromText);
         final EditText editTextSubject = (EditText)findViewById(R.id.input_heading);
         final EditText editTextBody = (EditText)findViewById(R.id.input_body);
-        ImageView buttonSend = (ImageView)findViewById(R.id.sendButton);
+        final ImageView buttonSend = (ImageView)findViewById(R.id.sendButton);
 
         //getting name for textViewFrom
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -70,6 +70,7 @@ public class NewPostActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         senderName = dataSnapshot.getValue(String.class);
+                        textViewFrom.setText(senderName);
                     }
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
