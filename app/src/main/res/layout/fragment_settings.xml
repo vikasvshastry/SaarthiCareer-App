@@ -17,14 +17,14 @@
         />
 
     <TextView
-        android:id="@+id/subscriptions"
+        android:id="@+id/themeChange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Subscriptions"
         android:fontFamily="monospace"
+        android:text="App theme"
         android:textSize="18sp"
-        android:paddingTop="15dp"
         android:textColor="@color/textColorPrimary"
+        android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:paddingLeft="30dp"
         />
@@ -55,6 +55,26 @@
         android:layout_height="0.3dp"
         android:background="@color/textColorPrimary"
         android:alpha="0.3"/>
+
+    <View
+        android:layout_marginLeft="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="@color/textColorPrimary"
+        android:alpha="0.3"/>
+
+    <TextView
+        android:id="@+id/subscriptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subscriptions"
+        android:fontFamily="monospace"
+        android:textSize="18sp"
+        android:paddingTop="15dp"
+        android:textColor="@color/textColorPrimary"
+        android:paddingBottom="15dp"
+        android:paddingLeft="30dp"
+        />
 
     <TextView
         android:id="@+id/feedback"
@@ -95,89 +115,98 @@
         android:background="@color/textColorPrimary"
         android:alpha="0.3"/>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/adminView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Admin"
-        android:textSize="15sp"
-        android:fontFamily="monospace"
-        android:paddingStart="15dp"
-        android:textColor="@color/colorAccent"
-        android:paddingTop="15dp"
-        android:paddingBottom="4dp"
-        />
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/addCollege"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add college"
-        android:fontFamily="monospace"
-        android:textSize="18sp"
-        android:textColor="@color/textColorPrimary"
-        android:paddingTop="18dp"
-        android:paddingBottom="15dp"
-        android:paddingLeft="30dp"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Admin"
+            android:textSize="15sp"
+            android:fontFamily="monospace"
+            android:paddingStart="15dp"
+            android:textColor="@color/colorAccent"
+            android:paddingTop="15dp"
+            android:paddingBottom="4dp"
+            />
 
-    <View
-        android:layout_marginLeft="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:background="@color/textColorPrimary"
-        android:alpha="0.3"/>
+        <TextView
+            android:id="@+id/addCollege"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add college"
+            android:fontFamily="monospace"
+            android:textSize="18sp"
+            android:textColor="@color/textColorPrimary"
+            android:paddingTop="18dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="30dp"
+            />
 
-    <TextView
-        android:id="@+id/assignCouseToCollege"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Assign course to college"
-        android:fontFamily="monospace"
-        android:textSize="18sp"
-        android:textColor="@color/textColorPrimary"
-        android:paddingTop="18dp"
-        android:paddingBottom="15dp"
-        android:paddingLeft="30dp"
-        />
+        <View
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/textColorPrimary"
+            android:alpha="0.3"/>
 
-    <View
-        android:layout_marginLeft="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:background="@color/textColorPrimary"
-        android:alpha="0.3"/>
+        <TextView
+            android:id="@+id/assignCouseToCollege"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Assign course to college"
+            android:fontFamily="monospace"
+            android:textSize="18sp"
+            android:textColor="@color/textColorPrimary"
+            android:paddingTop="18dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="30dp"
+            />
 
-    <TextView
-        android:id="@+id/createNewCourse"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Create new course"
-        android:fontFamily="monospace"
-        android:textSize="18sp"
-        android:textColor="@color/textColorPrimary"
-        android:paddingTop="18dp"
-        android:paddingBottom="15dp"
-        android:paddingLeft="30dp"
-        />
+        <View
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/textColorPrimary"
+            android:alpha="0.3"/>
 
-    <View
-        android:layout_marginLeft="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:background="@color/textColorPrimary"
-        android:alpha="0.3"/>
+        <TextView
+            android:id="@+id/createNewCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create new course"
+            android:fontFamily="monospace"
+            android:textSize="18sp"
+            android:textColor="@color/textColorPrimary"
+            android:paddingTop="18dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="30dp"
+            />
 
-    <TextView
-        android:id="@+id/endCourse"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="End course"
-        android:fontFamily="monospace"
-        android:textSize="18sp"
-        android:textColor="@color/textColorPrimary"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:paddingLeft="30dp"
-        />
+        <View
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:background="@color/textColorPrimary"
+            android:alpha="0.3"/>
+
+        <TextView
+            android:id="@+id/endCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="End course"
+            android:fontFamily="monospace"
+            android:textSize="18sp"
+            android:textColor="@color/textColorPrimary"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="30dp"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

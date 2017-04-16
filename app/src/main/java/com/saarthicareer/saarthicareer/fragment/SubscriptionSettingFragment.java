@@ -278,7 +278,6 @@ public class SubscriptionSettingFragment extends Fragment {
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(selectedCourses.size()==0){
                     Toast.makeText(getActivity(), "Course not selected.", Toast.LENGTH_SHORT).show();
                     return;

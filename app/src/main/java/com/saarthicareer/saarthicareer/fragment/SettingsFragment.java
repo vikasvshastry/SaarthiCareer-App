@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -75,6 +76,21 @@ public class SettingsFragment extends Fragment {
         TextView textViewAddCourseToCollege = (TextView)rootView.findViewById(R.id.assignCouseToCollege);
         TextView textViewSubscriptions = (TextView)rootView.findViewById(R.id.subscriptions);
         TextView textPasswordChange = (TextView)rootView.findViewById(R.id.changePasswordButton);
+        final LinearLayout adminSettings = (LinearLayout)rootView.findViewById(R.id.adminView);
+
+        //setting visibility of adminSettings
+        rootRef.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String type = dataSnapshot.getValue(String.class);
+                if(type.equals("ADMIN")){
+                    adminSettings.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
 
         //password change
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
