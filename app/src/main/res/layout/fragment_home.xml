@@ -79,7 +79,8 @@
         android:src="@drawable/newpost"
         android:tint="@color/windowBackground"
         android:layout_alignBottom="@+id/recyclerView"
-        android:layout_alignEnd="@+id/recyclerView"/>
+        android:layout_alignEnd="@+id/recyclerView"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabColl"

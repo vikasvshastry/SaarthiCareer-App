@@ -67,14 +67,6 @@ public class HomeFragment extends Fragment {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         uid = firebaseAuth.getCurrentUser().getUid();
 
-        FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NewPostActivity.class));
-            }
-        });
-
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
@@ -113,6 +105,15 @@ public class HomeFragment extends Fragment {
                             relativeLayout2.setVisibility(View.VISIBLE);
                             final FloatingActionButton fabColl = (FloatingActionButton)rootView.findViewById(R.id.fabColl);
                             fabColl.setVisibility(View.VISIBLE);
+                            final FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+                            fab.setVisibility(View.VISIBLE);
+                            fab.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    startActivity(new Intent(getActivity(), NewPostActivity.class));
+                                }
+                            });
+
                             final Dialog collegeSelectDialog = new Dialog(getActivity());
                             collegeSelectDialog.setContentView(R.layout.dialog_college_select_trainers);
                             final ListView listView = (ListView)collegeSelectDialog.findViewById(R.id.collegeListView);

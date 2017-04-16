@@ -76,6 +76,7 @@ public class SettingsFragment extends Fragment {
         TextView textViewAddCourseToCollege = (TextView)rootView.findViewById(R.id.assignCouseToCollege);
         TextView textViewSubscriptions = (TextView)rootView.findViewById(R.id.subscriptions);
         TextView textPasswordChange = (TextView)rootView.findViewById(R.id.changePasswordButton);
+        TextView textViewEdnCourse = (TextView)rootView.findViewById(R.id.endCourse);
         final LinearLayout adminSettings = (LinearLayout)rootView.findViewById(R.id.adminView);
 
         //setting visibility of adminSettings
@@ -89,6 +90,17 @@ public class SettingsFragment extends Fragment {
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
+        //end course
+        final Dialog dialogEndCourse = new Dialog(getActivity());
+        dialogEndCourse.setContentView(R.layout.dialog_end_course);
+        textViewEdnCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogEndCourse.show();
+
             }
         });
 
