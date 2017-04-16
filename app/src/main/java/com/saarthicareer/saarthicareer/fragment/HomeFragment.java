@@ -320,7 +320,6 @@ public class HomeFragment extends Fragment {
             dateText = (TextView) v.findViewById(R.id.dateText);
             commentcount = (TextView) v.findViewById(R.id.commentsNumber);
             commentbutton = (ImageView) v.findViewById(R.id.CommentButton);
-            postImage = (ImageView) v.findViewById(R.id.postImage);
             postLetterForCircle = (TextView) v.findViewById(R.id.postLetterForCircle);
 
         }
@@ -346,9 +345,7 @@ public class HomeFragment extends Fragment {
                         postViewHolder.senderText.setText(p.getSender());
                         postViewHolder.timeText.setText(p.getTime());
                         postViewHolder.dateText.setText(p.getDate());
-                        final int color = generator.getColor(p.getSender());
                         String firstLetter = p.getHead().charAt(0)+"";
-                        postViewHolder.postImage.setColorFilter(color);
                         postViewHolder.postLetterForCircle.setText(firstLetter);
                         postViewHolder.commentcount.setText(p.getNoOfComments()+"");
 
@@ -358,7 +355,6 @@ public class HomeFragment extends Fragment {
                             public void onClick(View v) {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("msgId",s);
-                                bundle.putInt("color",color);
 
                                 Toast.makeText(getActivity(), ""+s, Toast.LENGTH_SHORT).show();
 

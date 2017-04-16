@@ -25,7 +25,6 @@ public class PostDisplayFragment extends Fragment {
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
     String msgId;
     String uid;
-    int color;
 
     public PostDisplayFragment() {
         // Required empty public constructor
@@ -48,13 +47,11 @@ public class PostDisplayFragment extends Fragment {
         final TextView bodyText = (TextView)rootView.findViewById(R.id.bodyText);
         final TextView commentCountText = (TextView)rootView.findViewById(R.id.commentsNumber);
         final FloatingActionButton commentbutton = (FloatingActionButton) rootView.findViewById(R.id.CommentButton);
-        final ImageView postImage = (ImageView)rootView.findViewById(R.id.postImage);
         final TextView postLetter = (TextView)rootView.findViewById(R.id.postLetterForCircle);
 
         Bundle bundle = this.getArguments();
         if(bundle != null){
             msgId = bundle.getString("msgId");
-            color = bundle.getInt("color");
         }
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -70,7 +67,6 @@ public class PostDisplayFragment extends Fragment {
                 timeText.setText(selectedPost.getTime());
                 headingText.setText(selectedPost.getHead());
                 bodyText.setText(selectedPost.getBody());
-                postImage.setColorFilter(color);
                 postLetter.setText(selectedPost.getHead().charAt(0) + "");
                 commentCountText.setText(selectedPost.getNoOfComments()+"");
 
