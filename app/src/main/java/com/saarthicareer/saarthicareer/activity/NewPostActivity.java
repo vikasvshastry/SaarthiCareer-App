@@ -40,6 +40,7 @@ public class NewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
+        //working with the toolbar for this activity
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Compose");
@@ -57,44 +58,11 @@ public class NewPostActivity extends AppCompatActivity {
         final EditText editTextBody = (EditText)findViewById(R.id.input_body);
         ImageView buttonSend = (ImageView)findViewById(R.id.sendButton);
 
-        //getting name for from text
+        //getting name for textViewFrom
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final String uid = firebaseAuth.getCurrentUser().getUid();
-        rootRef.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                final String type = snapshot.getValue(String.class);
-                rootRef.child("userDetails").child(type).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(type.equals("STUDENT")){
-                            Trainee trainee = new Trainee();
-                            trainee = dataSnapshot.getValue(Trainee.class);
-                            textViewFrom.setText(trainee.getName());
-                            senderName = trainee.getName();
-                        }
-                        else if(type.equals("ADMIN")){
-                            Admin admin = new Admin();
-                            admin = dataSnapshot.getValue(Admin.class);
-                            textViewFrom.setText(admin.getName());
-                            senderName = admin.getName();
-                        }
-                        else if(type.equals("TRAINER")){
-                            final Trainer trainer = dataSnapshot.getValue(Trainer.class);
-                            textViewFrom.setText(trainer.getName());
-                            senderName = trainer.getName();
-                        }
-                    }
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
-            }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
+        senderName = firebaseAuth.getCurrentUser().getDisplayName();
+        textViewFrom.setText(senderName);
 
         final List<String> listColleges = new ArrayList<>();
         final Map<String,String> mapColleges = new ArrayMap<>();

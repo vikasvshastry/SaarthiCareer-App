@@ -24,16 +24,10 @@ import com.saarthicareer.saarthicareer.fragment.SettingsFragment;
 
 public class MainActivity extends ActionBarActivity implements FragmentDrawer.FragmentDrawerListener {
 
-    private int fragno;
     private FirebaseAuth firebaseAuth;
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
     private DrawerLayout drawerLayout;
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
-        savedInstanceState.putInt("fragno",fragno);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +42,6 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -58,7 +51,6 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
         drawerFragment.setDrawerListener(this);
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-
             @Override
             public void onBackStackChanged() {
                 Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_body);
@@ -68,16 +60,9 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
             }
         });
 
-        if(savedInstanceState != null){
-            int no = savedInstanceState.getInt("fragno");
-            displayView(no);
-        }
-        else
-        {
-            displayView(0);
-        }
-    }
+        displayView(0);
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,7 +82,6 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawer.Fr
             fragmentTransaction.replace(R.id.container_body, fragment , "settings");
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-
             getSupportActionBar().setTitle("Settings");
             return true;
         }
