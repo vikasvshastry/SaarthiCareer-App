@@ -22,7 +22,10 @@ import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.saarthicareer.saarthicareer.R;
+import com.saarthicareer.saarthicareer.classes.Admin;
 import com.saarthicareer.saarthicareer.classes.Comment;
+import com.saarthicareer.saarthicareer.classes.Trainee;
+import com.saarthicareer.saarthicareer.classes.Trainer;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -50,17 +53,35 @@ public class CommentsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //inflating layout
+        View rootView = inflater.inflate(R.layout.fragment_comments, container, false);
 
+        //getting name
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         uid = firebaseAuth.getCurrentUser().getUid();
-        name = firebaseAuth.getCurrentUser().getDisplayName();
+        rootRef.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                final String type = snapshot.getValue(String.class);
+                rootRef.child("userDetails").child(type).child(uid).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        name = dataSnapshot.getValue(String.class);
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
 
         Bundle bundle = this.getArguments();
         if(bundle != null){
             msgid = bundle.getString("msgid");
         }
-
-        View rootView = inflater.inflate(R.layout.fragment_comments, container, false);
 
         ImageView sendButton = (ImageView)rootView.findViewById(R.id.sendComment);
         final EditText editTextCmt = (EditText)rootView.findViewById(R.id.commentText);
@@ -82,6 +103,7 @@ public class CommentsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
 
+        //adapter for recyclerView to populate it with comments
         final FirebaseRecyclerAdapter<Comment, CommentViewHolder> adapter = new FirebaseRecyclerAdapter<Comment,CommentViewHolder>(
                 Comment.class,
                 R.layout.chat_me_layout,
@@ -121,6 +143,7 @@ public class CommentsFragment extends Fragment {
             }
         };
 
+        //scroll down when new comment posted
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {

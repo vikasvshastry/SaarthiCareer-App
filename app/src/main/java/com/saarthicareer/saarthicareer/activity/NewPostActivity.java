@@ -66,30 +66,13 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 final String type = snapshot.getValue(String.class);
-                rootRef.child("userDetails").child(type).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                rootRef.child("userDetails").child(type).child(uid).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(type.equals("STUDENT")){
-                            Trainee trainee = new Trainee();
-                            trainee = dataSnapshot.getValue(Trainee.class);
-                            textViewFrom.setText(trainee.getName());
-                            senderName = trainee.getName();
-                        }
-                        else if(type.equals("ADMIN")){
-                            Admin admin = new Admin();
-                            admin = dataSnapshot.getValue(Admin.class);
-                            textViewFrom.setText(admin.getName());
-                            senderName = admin.getName();
-                        }
-                        else if(type.equals("TRAINER")){
-                            final Trainer trainer = dataSnapshot.getValue(Trainer.class);
-                            textViewFrom.setText(trainer.getName());
-                            senderName = trainer.getName();
-                        }
+                        senderName = dataSnapshot.getValue(String.class);
                     }
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
                     }
                 });
             }
