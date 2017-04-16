@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class HomeFragment extends Fragment {
 
     private Firebase rootRef = new Firebase("https://saarthi-career.firebaseio.com/");
@@ -47,7 +45,6 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private View rootView;
     LinearLayoutManager mLayoutManager;
-    ColorGenerator generator = ColorGenerator.MATERIAL;
     List<String> collegeList = new ArrayList<>();
     Map<String,String> collegeMap = new ArrayMap<>();
     List<String> courseList = new ArrayList<>();
@@ -308,7 +305,6 @@ public class HomeFragment extends Fragment {
         TextView headingText,bodyText,senderText,timeText,dateText,commentcount,postLetterForCircle;
         ImageView commentbutton;
         View mView;
-        ImageView postImage;
 
         public PostViewHolder(View v){
             super(v);
