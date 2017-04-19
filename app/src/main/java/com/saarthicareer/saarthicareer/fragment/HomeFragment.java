@@ -75,6 +75,8 @@ public class HomeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
 
+        final TextView errorMessage = (TextView)rootView.findViewById(R.id.subscriptionErrorMessage);
+
         final String uid = firebaseAuth.getCurrentUser().getUid();
         rootRef.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -90,7 +92,13 @@ public class HomeFragment extends Fragment {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for(DataSnapshot child : dataSnapshot.getChildren()){
                                         String course = child.getValue(String.class);
-                                        adapterFunc(trainee.getCollege(),course);
+                                        if(course.isEmpty()){
+                                            errorMessage.setVisibility(View.VISIBLE);
+                                        }
+                                        else {
+                                            errorMessage.setVisibility(View.GONE);
+                                            adapterFunc(trainee.getCollege(),course);
+                                        }
                                     }
                                 }
                                 @Override
@@ -128,6 +136,12 @@ public class HomeFragment extends Fragment {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     courseMap.clear();
                                     courseList.clear();
+                                    if(!dataSnapshot.hasChildren()){
+                                        errorMessage.setVisibility(View.VISIBLE);
+                                    }
+                                    else{
+                                        errorMessage.setVisibility(View.GONE);
+                                    }
                                     for(DataSnapshot child : dataSnapshot.getChildren()){
                                         collegeId = child.getKey();
                                         rootRef.child("colleges").child(child.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
