@@ -1,7 +1,7 @@
 # SaarthiCareer-App
 Notifications and Feedback App
 
-Allows users to get Notified and give feedback.
+Allows users to be Notified and give feedback.
 
 Progress :
 1. Done with accounts.
