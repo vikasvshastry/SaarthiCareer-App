@@ -145,11 +145,16 @@ public class RegistrationTrainerFragment extends Fragment {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            Toast.makeText(getActivity(), "Verification link has been sent to your mail", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(getActivity(), "Verification email sent to your mail", Toast.LENGTH_SHORT).show();
+                                                            startActivity(new Intent(getActivity(), MainActivity.class));
+                                                        }
+                                                        else
+                                                        {
+                                                            Toast.makeText(getActivity(), "Unable to send verification mail", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
-                                                });
-                                        startActivity(new Intent(getActivity().getApplicationContext(), MainActivity.class));
+                                        });
+
                                     }
                                     else{
                                         progressDialog.dismiss();

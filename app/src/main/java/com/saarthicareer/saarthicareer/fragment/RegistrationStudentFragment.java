@@ -134,16 +134,12 @@ public class RegistrationStudentFragment extends Fragment {
                     progressDialog.setMessage("Registering...");
                     progressDialog.show();
 
-                    try {
-                        Toast.makeText(getActivity(), ""+email+name+password, Toast.LENGTH_SHORT).show();
 
-                        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-
                                     uid = firebaseAuth.getCurrentUser().getUid();
-
                                     Trainee trainee = new Trainee();
                                     trainee.setPassword(password);
                                     trainee.setType(type);
@@ -170,14 +166,15 @@ public class RegistrationStudentFragment extends Fragment {
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         Toast.makeText(getActivity(), "Verification email sent to your mail", Toast.LENGTH_SHORT).show();
+                                                        startActivity(new Intent(getActivity(), MainActivity.class));
                                                     }
                                                     else
                                                     {
                                                         Toast.makeText(getActivity(), "Unable to send verification mail", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
-                                            });
-                                    startActivity(new Intent(getActivity(), MainActivity.class));
+                                    });
+
                                 } else {
                                     progressDialog.dismiss();
                                     Toast.makeText(getActivity(), "Registration Failed", Toast.LENGTH_SHORT).show();
@@ -185,9 +182,6 @@ public class RegistrationStudentFragment extends Fragment {
                             }
                         });
 
-                    }catch (Exception e){
-                        Toast.makeText(getActivity(), ""+e.toString(), Toast.LENGTH_SHORT).show();
-                    }
                 }
             }
         });
